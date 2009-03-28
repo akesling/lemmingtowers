@@ -71,7 +71,7 @@ class Tile(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.src_image = pygame.image.load(image)
         self.position = (position[0]*TILE_WIDTH + (TILE_WIDTH/2), \
-			position[1]*TILE_WIDTH + (TILE_WIDTH/2))
+            position[1]*TILE_WIDTH + (TILE_WIDTH/2))
         self.image = self.src_image
         self.rect = self.image.get_rect()
 
