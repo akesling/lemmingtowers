@@ -49,7 +49,6 @@ rect = screen.get_rect()
 lemming = Lemming((100,100))
 lgroup = pygame.sprite.RenderPlain(lemming)
 while 1:
-    
     deltaT = clock.tick(30)
     screen.fill((0, 0, 0))
     lgroup.update(deltaT)
