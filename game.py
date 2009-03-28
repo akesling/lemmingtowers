@@ -84,8 +84,8 @@ random.seed(time.time())
 
 # Define the towers/lemming that will be on the map
 rect = screen.get_rect()
-lgroup = pygame.sprite.RenderPlain(Lemming((100, 100)))  # Add it to the lemming group
-tgroup = pygame.sprite.RenderPlain(Tower((100, 200)))
+lemminggroup = pygame.sprite.RenderPlain(Lemming((100, 100)))  # Add it to the lemming group
+towergroup = pygame.sprite.RenderPlain()
 tilegroup = pygame.sprite.RenderPlain(Tile((1, 10)))
 
 framecount = 0
@@ -94,23 +94,22 @@ while 1:
     framecount = (framecount + 1) % FRAMERATE
     if framecount == 0:
         lemming = Lemming((100, 100))  # Define a lemming
-        lgroup.add(lemming)  # Add it to the lemming group
-        
+        lemminggroup.add(lemming)  # Add it to the lemming group
 
     deltaT = clock.tick(30)  # Controll the framerate (which controls game speed)
     screen.fill(BACKGROUND)  # Background color
-    lgroup.update(deltaT)  # Update the positions of our objects
-    tgroup.update(deltaT)
+    lemminggroup.update(deltaT)  # Update the positions of our objects
+    towergroup.update(deltaT)
     tilegroup.update(deltaT)
 
     # See if our lemming collided with anything
-    for l in lgroup:
-        if pygame.sprite.spritecollide(l, tgroup, False):  # Collision with a tower
+    for l in lemminggroup:
+        if pygame.sprite.spritecollide(l, towergroup, False):  # Collision with a tower
             l.direction += random.choice((90, -90))  # Rotate either left or right
 
     # Redraw our object positions
-    lgroup.draw(screen)
-    tgroup.draw(screen)
+    lemminggroup.draw(screen)
+    towergroup.draw(screen)
     tilegroup.draw(screen)
 
     # Redraw the map with the above changes
