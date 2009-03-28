@@ -81,6 +81,8 @@ class Lemming(pygame.sprite.Sprite):
             y += self.speed * math.cos(rad)
             self.position = (x, y)
 
+            if self.position
+
 #            print "Moving..."
         else:
 #            print "Not moving..."
@@ -156,6 +158,21 @@ class Tile(pygame.sprite.Sprite):
         }[orient]
         for i in range(0, self.orient/90):  # Rotate right until we're in the specified orientation
             self.rotate()
+
+    def canEnter(self, origin):
+        if origin == 0:
+            origin = "N"
+        elif origin == 90:
+            origin = "E"
+        elif origin == 180:
+            origin = "S"
+        else:
+            origin = "W"
+
+        if origin in self.validEntrances:
+            return True
+        else:
+            return False
 
     def update(self, deltaT):
         self.position = self.position
