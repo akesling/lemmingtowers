@@ -74,13 +74,21 @@ class Tower(pygame.sprite.Sprite):
 
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, position, image="images/default-tile_8.gif", orient="N"):
+    def __init__(self, position, tile_type="default", orient="N"):
         pygame.sprite.Sprite.__init__(self)
-        self.src_image = pygame.image.load(image)
+        
         self.position = (position[0]*TILE_WIDTH + (TILE_WIDTH/2), \
             position[1]*TILE_WIDTH + (TILE_WIDTH/2))
+       
+        self.type = tile_type
+        image = { "default":"tiles/default-tile_8.gif",
+            "l":"images/l.png",
+            "t":"images/t.png",
+            "cross":"images/cross.png",
+            "straight":"images/straight.png"}[self.type]
+        
+        self.src_image = pygame.image.load(image)
         self.image = self.src_image
-        self.rect = self.image.get_rect()
         self.orient = { 
             "N":0,
             "S":180,
@@ -88,6 +96,7 @@ class Tile(pygame.sprite.Sprite):
             "W":270 
         }[orient]
         self.image = pygame.transform.rotate(self.image, self.orient)
+        self.rect = self.image.get_rect()
 
     def update(self, deltaT):
         self.position = self.position
@@ -137,7 +146,7 @@ lemminggroup = pygame.sprite.RenderPlain()  # Add it to the lemming group
 #for i in range(0, 100):  # Randomly create towers
 #    towergroup.add(Tower((random.randint(0, 24), random.randint(0, 15))))
 for i in range(0, 100):  # Randomly create tiles
-    tilegroup.add(Tile((random.randint(0, 24), random.randint(0, 15)), "images/l.png"))
+    tilegroup.add(Tile((random.randint(0, 24), random.randint(0, 15)), "l"))
 
 
 
