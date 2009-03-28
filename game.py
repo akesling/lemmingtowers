@@ -11,7 +11,6 @@ FRAMERATE = 30
 
 class Lemming(pygame.sprite.Sprite):
     MAX_FORWARD_SPEED = 10
-    MAX_REVERSE_SPEED = 0
     TURN_SPEED = 5
     ACCELERATION = 2
 
@@ -30,8 +29,8 @@ class Lemming(pygame.sprite.Sprite):
         self.speed += (self.k_up + self.k_down)
         if self.speed > self.MAX_FORWARD_SPEED:
             self.speed = self.MAX_FORWARD_SPEED
-        if self.speed < self.MAX_REVERSE_SPEED:
-            self.speed = -self.MAX_REVERSE_SPEED
+        if self.speed < 0:
+            self.speed = 0
 
 #        self.direction = (self.k_right + self.k_left)
         x, y = self.position
@@ -46,7 +45,7 @@ class Lemming(pygame.sprite.Sprite):
 
 
 class Tower(pygame.sprite.Sprite):
-    def __init__(self, position, image="images/tower1.png"):
+    def __init__(self, position, image="images/tower.png"):
         pygame.sprite.Sprite.__init__(self)
         self.src_image = pygame.image.load(image)
         self.position = position
@@ -57,14 +56,15 @@ class Tower(pygame.sprite.Sprite):
         pass
 
     def update(self, deltaT):
-        pass
+        self.position = self.position
+        self.rect.center = self.position
 
 
 
 rect = screen.get_rect()
 lemming = Lemming((100,100))
 lgroup = pygame.sprite.RenderPlain(lemming)
-tower = Tower((100, 500))
+tower = Tower((100, 200))
 tgroup = pygame.sprite.RenderPlain(tower)
 
 while 1:
