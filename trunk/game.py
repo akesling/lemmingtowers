@@ -16,26 +16,26 @@ lemsAlive = 0
 TILE_WIDTH = 40
 
 def importLevel():
-	if len(sys.argv) > 1:
-		filename = sys.argv[1]
-	else:
-		print "Must provide a level"
-		exit();
+    if len(sys.argv) > 1:
+        filename = sys.argv[1]
+    else:
+        print "Must provide a level"
+        exit();
 
-	tiles = []
+    tiles = []
 
-	level = open(filename, "r")
-	for space in level:
-		space = map((lambda x: x.split(',')), space.strip().split(':'))
-		space[0] = map(int, space[0])
-		tiles.append(space)
-	
-	for tile in tiles:
-		if tile[1][0] in ('IPath', 'LPath', 'TPath', 'IRiver', 'LRiver', 'TRiver'):
-			tilegroup.add(Tile(tile[0], tile[1][0], tile[2][0]))
-		if tile[1][0] in ('XPath', 'Default', 'Tower', 'Pit'):
-			tilegroup.add(Tile(tile[0], tile[1][0]))
-	
+    level = open(filename, "r")
+    for space in level:
+        space = map((lambda x: x.split(',')), space.strip().split(':'))
+        space[0] = map(int, space[0])
+        tiles.append(space)
+    
+    for tile in tiles:
+        if tile[1][0] in ('IPath', 'LPath', 'TPath', 'IRiver', 'LRiver', 'TRiver'):
+            tilegroup.add(Tile(tile[0], tile[1][0], tile[2][0]))
+        if tile[1][0] in ('XPath', 'Default', 'Tower', 'Pit'):
+            tilegroup.add(Tile(tile[0], tile[1][0]))
+    
 def mouseControl():
     for event in pygame.event.get():
         if event.type == MOUSEBUTTONDOWN:
@@ -44,6 +44,8 @@ def mouseControl():
                 if (tile.position[0]-20 < mousePos[0] < tile.position[0]+20 \
                 and tile.position[1]-20 < mousePos[1] < tile.position[1]+20):
                     tile.rotate()
+
+
 
 class Lemming(pygame.sprite.Sprite):
     MAX_FORWARD_SPEED = 10
@@ -59,22 +61,42 @@ class Lemming(pygame.sprite.Sprite):
         self.k_left = self.k_right = self.k_up = self.k_down = 0
         self.shouldMove = 1
 
+    def rotate(self):
+        self.direction += random.choice((90, -90))  # Rotate either left or right
+
+    def backtrack(self):  # Go back two spaces if we entered the wrong tile
+        x, y = self.position
+        rad = self.direction * math.pi / 180
+        x -= self.speed * math.sin(rad)
+        y -= self.speed * math.cos(rad)
+
     def update(self, deltaT):
         if self.position[0] >= SCREEN_SIZE[0] or self.position[1] >= SCREEN_SIZE[1] or self.position[0] <= 0 or self.position[1] <= 0:
-            self.direction += random.choice((90, -90))  # Rotate either left or right
+            self.rotate()
 
-        if self.shouldMove == 1:
+        if self.shouldMove == 1:  # Don't move into a space if it's an invalid space!
             x, y = self.position
             rad = self.direction * math.pi / 180
             x += self.speed * math.sin(rad)
             y += self.speed * math.cos(rad)
             self.position = (x, y)
+
+#            print "Moving..."
         else:
+#            print "Not moving..."
             self.shouldMove = 1
 
         self.image = pygame.transform.rotate(self.src_image, self.direction)
         self.rect = self.image.get_rect()
         self.rect.center = self.position
+
+
+
+def getTile(x, y):
+    gridValue = (int(x/40), int(y/40))
+    for tile in tilegroup:
+        if int(x/40) <= tile.position <= (int(x/40)+40):
+            return tile
 
 
 
@@ -114,15 +136,26 @@ class Tile(pygame.sprite.Sprite):
         self.src_image = pygame.image.load(image)
         self.image = self.src_image
         self.rect = self.image.get_rect()
-		
+        
+
+        self.validEntrances = ()
+        if self.type == "LPath":
+            self.validEntrances = ["N", "E"]
+        elif self.type == "TPath":
+            self.validEntrances = ["N", "E", "W"]
+        elif self.type == "XPath":
+            self.validEntrances = ["N", "E", "S", "W"]
+        else:
+            self.validEntrances = ["N", "S"]
+
         self.orient = { 
             "N":0,
-            "S":180,
             "E":90,
+            "S":180,
             "W":270
         }[orient]
-		
-        self.image = pygame.transform.rotate(self.image, self.orient)
+        for i in range(0, self.orient/90):  # Rotate right until we're in the specified orientation
+            self.rotate()
 
     def update(self, deltaT):
         self.position = self.position
@@ -133,6 +166,17 @@ class Tile(pygame.sprite.Sprite):
         self.orient = self.orient + 90
         if self.orient == 360:
             self.orient = 0
+
+        # Account for rotation in the list of valid entrances
+        for entrance in self.validEntrances:
+            if entrance == "N":
+                entrance = "E"
+            elif entrance == "E":
+                entrance = "S"
+            elif entrance == "S":
+                entrance = "W"
+            else:
+                entrance = "N"
 
 
 
@@ -188,7 +232,7 @@ while 1:
         lemsAlive += 1
 
     # Update everything and redraw the board
-    deltaT = clock.tick(30)  # Controll the framerate (which controls game speed)
+    deltaT = clock.tick(30)  # Control the framerate (which controls game speed)
     screen.fill(BACKGROUND)  # Background color
     updateBoard()
     detectCollisions()
