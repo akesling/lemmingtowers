@@ -11,25 +11,25 @@ screen = pygame.display.set_mode(SCREEN_SIZE)
 BACKGROUND = (0, 0, 0)
 clock = pygame.time.Clock()
 FRAMERATE = 30
-NUM_LEMS = 10
+NUM_LEMS = 1
 lemsAlive = 0
 TILE_WIDTH = 40
 
 def mouseControl():
-	for event in pygame.event.get():
-		if event.type == MOUSEBUTTONDOWN:
-			mousePos = pygame.mouse.get_pos()
-			for tile in tilegroup:
-				if (tile.position[0]-20 < mousePos[0] < tile.position[0]+20 \
-				and tile.position[1]-20 < mousePos[1] < tile.position[1]+20):
-					tile.rotate()
+    for event in pygame.event.get():
+        if event.type == MOUSEBUTTONDOWN:
+            mousePos = pygame.mouse.get_pos()
+            for tile in tilegroup:
+                if (tile.position[0]-20 < mousePos[0] < tile.position[0]+20 \
+                and tile.position[1]-20 < mousePos[1] < tile.position[1]+20):
+                    tile.rotate()
 
 class Lemming(pygame.sprite.Sprite):
     MAX_FORWARD_SPEED = 10
     TURN_SPEED = 5
     ACCELERATION = 2
 
-    def __init__(self, position, image="images/lemming-8.gif"):
+    def __init__(self, position, image="images/lemming.png"):
         pygame.sprite.Sprite.__init__(self)
         self.src_image = pygame.image.load(image)
         self.position = position
@@ -42,20 +42,15 @@ class Lemming(pygame.sprite.Sprite):
         if self.position[0] >= SCREEN_SIZE[0] or self.position[1] >= SCREEN_SIZE[1] or self.position[0] <= 0 or self.position[1] <= 0:
             self.direction += random.choice((90, -90))  # Rotate either left or right
 
-        self.speed += (self.k_up + self.k_down)
-        if self.speed > self.MAX_FORWARD_SPEED:
-            self.speed = self.MAX_FORWARD_SPEED
-        if self.speed < 0:
-            self.speed = 0
-
-#        self.direction = (self.k_right + self.k_left)
         if self.shouldMove == 1:
             x, y = self.position
             rad = self.direction * math.pi / 180
             x += self.speed * math.sin(rad)
             y += self.speed * math.cos(rad)
             self.position = (x, y)
+            print "Moving..."
         else:
+            print "Not moving..."
             self.shouldMove = 1
 
         self.image = pygame.transform.rotate(self.src_image, self.direction)
@@ -86,22 +81,23 @@ class Tile(pygame.sprite.Sprite):
             position[1]*TILE_WIDTH + (TILE_WIDTH/2))
         self.image = self.src_image
         self.rect = self.image.get_rect()
-        self.orient = { "N":0,
+        self.orient = { 
+            "N":0,
             "S":180,
             "E":90,
-            "W":270}[orient]
+            "W":270 
+        }[orient]
         self.image = pygame.transform.rotate(self.image, self.orient)
 
     def update(self, deltaT):
         self.position = self.position
         self.rect.center = self.position
-	
+
     def rotate(self):
         self.image = pygame.transform.rotate(self.image, 90)
         self.orient = self.orient + 90
         if self.orient == 360:
             self.orient = 0
-		
 
 
 
@@ -124,6 +120,7 @@ def detectCollisions():
             l.direction += random.choice((90, -90))  # Rotate either left or right
             print l.direction
             l.shouldMove = 0
+            l.position
 
 
 
@@ -136,11 +133,10 @@ towergroup = pygame.sprite.RenderPlain()
 tilegroup = pygame.sprite.RenderPlain()
 lemminggroup = pygame.sprite.RenderPlain()  # Add it to the lemming group
 
-# Randomly create towers
-for i in range(0, 100):
-    towergroup.add(Tower((random.randint(0, 24), random.randint(0, 15))))
-# Randomly create towers
-for i in range(0, 100):
+
+#for i in range(0, 100):  # Randomly create towers
+#    towergroup.add(Tower((random.randint(0, 24), random.randint(0, 15))))
+for i in range(0, 100):  # Randomly create tiles
     tilegroup.add(Tile((random.randint(0, 24), random.randint(0, 15)), "images/l.png"))
 
 
