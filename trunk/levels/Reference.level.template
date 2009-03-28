@@ -1,0 +1,12 @@
+column,row:piece:args,args,args
+
+Pieces:
+
+Tower:FireN,FireE,FireS,FireW
+LPath:(N,E,S,W)
+TPath:(N,E,S,W)
+IPath:(N,E,S,W)
+XPath
+Pit
+SRiver:(N,E,S,W)
+LRiver:(N,E,S,W)
