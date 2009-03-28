@@ -1,12 +1,11 @@
 import pygame, math, sys
 from pygame.locals import *
 
-screen = pygame.display.set_mode((1024, 768))
+SCREEN_SIZE = (1024, 768)
+screen = pygame.display.set_mode(SCREEN_SIZE)
 BACKGROUND = (255, 248, 168)
 clock = pygame.time.Clock()
 FRAMERATE = 30
-speed = direction = 0
-position = (100, 100)
 
 
 
@@ -25,13 +24,16 @@ class Lemming(pygame.sprite.Sprite):
         self.k_left = self.k_right = self.k_up = self.k_down = 0
 
     def update(self, deltaT):
+        if self.position[0] == SCREEN_SIZE[0] or self.position[1] == SCREEN_SIZE[1]:
+            self.speed = 0
+
         self.speed += (self.k_up + self.k_down)
         if self.speed > self.MAX_FORWARD_SPEED:
             self.speed = self.MAX_FORWARD_SPEED
         if self.speed < self.MAX_REVERSE_SPEED:
             self.speed = -self.MAX_REVERSE_SPEED
 
-        self.direction = (self.k_right + self.k_left)
+#        self.direction = (self.k_right + self.k_left)
         x, y = self.position
         rad = self.direction * math.pi / 180
         x += self.speed * math.sin(rad)
@@ -44,9 +46,10 @@ class Lemming(pygame.sprite.Sprite):
 
 
 rect = screen.get_rect()
-lemming = Lemming(rect.center)
+lemming = Lemming((100,100))
 lgroup = pygame.sprite.RenderPlain(lemming)
 while 1:
+    
     deltaT = clock.tick(30)
     screen.fill((0, 0, 0))
     lgroup.update(deltaT)
