@@ -79,13 +79,13 @@ class Tile(pygame.sprite.Sprite):
         
         self.position = (position[0]*TILE_WIDTH + (TILE_WIDTH/2), \
             position[1]*TILE_WIDTH + (TILE_WIDTH/2))
-       
+         
         self.type = tile_type
-        image = { "default":"tiles/default-tile_8.gif",
-            "l":"images/l.png",
-            "t":"images/t.png",
-            "cross":"images/cross.png",
-            "straight":"images/straight.png"}[self.type]
+        image = { "Default":"tiles/landscape/default-8.gif",
+            "LPath":"tiles/landscape/lpath.png",
+            "TPath":"tiles/landscape/tpath.png",
+            "XPath":"tiles/landscape/xpath.png",
+            "IPath":"tiles/landscape/ipath.png"}[self.type]
         
         self.src_image = pygame.image.load(image)
         self.image = self.src_image
