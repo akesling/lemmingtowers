@@ -82,12 +82,9 @@ random.seed(time.time())
 
 # Define the towers/lemming that will be on the map
 rect = screen.get_rect()
-lemming = Lemming((100, 100))  # Define a lemming
-lgroup = pygame.sprite.RenderPlain(lemming)  # Add it to the lemming group
-tower = Tower((100, 200))  # Same for towers
-tgroup = pygame.sprite.RenderPlain(tower)
-tile = Tile((500, 200))
-tilegroup = pygame.sprite.RenderPlain(tile)
+lgroup = pygame.sprite.RenderPlain(Lemming((100, 100)))  # Add it to the lemming group
+tgroup = pygame.sprite.RenderPlain(Tower((100, 200)))
+tilegroup = pygame.sprite.RenderPlain(Tile((500, 200)))
 
 framecount = 0
 # Start the game loop
