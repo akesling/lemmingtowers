@@ -13,6 +13,7 @@ clock = pygame.time.Clock()
 FRAMERATE = 30
 NUM_LEMS = 10
 lemsAlive = 0
+TILE_WIDTH = 40
 
 
 
@@ -69,7 +70,8 @@ class Tile(pygame.sprite.Sprite):
     def __init__(self, position, image="images/default-tile_8.gif"):
         pygame.sprite.Sprite.__init__(self)
         self.src_image = pygame.image.load(image)
-        self.position = position
+        self.position = (position[0]*TILE_WIDTH + (TILE_WIDTH/2), \
+			position[1]*TILE_WIDTH + (TILE_WIDTH/2))
         self.image = self.src_image
         self.rect = self.image.get_rect()
 
@@ -84,7 +86,7 @@ random.seed(time.time())
 rect = screen.get_rect()
 lgroup = pygame.sprite.RenderPlain(Lemming((100, 100)))  # Add it to the lemming group
 tgroup = pygame.sprite.RenderPlain(Tower((100, 200)))
-tilegroup = pygame.sprite.RenderPlain(Tile((500, 200)))
+tilegroup = pygame.sprite.RenderPlain(Tile((1, 10)))
 
 framecount = 0
 # Start the game loop
