@@ -15,6 +15,25 @@ NUM_LEMS = 1
 lemsAlive = 0
 TILE_WIDTH = 40
 
+def importLevel():
+	if len(sys.argv) > 1:
+		filename = sys.argv[1]
+	else:
+		print "Must provide a level"
+		exit();
+
+	tiles = []
+
+	level = open(filename, "r")
+	for space in level:
+		space = map((lambda x: x.split(',')), space.strip().split(':'))
+		space[0] = map(int, space[0])
+		tiles.append(space)
+	
+	for tile in tiles:
+		if tile[1][0] in ('RPath', 'IPath', 'LPath', 'TPath'):
+			tilegroup.add(Tile(tile[0], tile[1][0], tile[2][0]))
+	
 def mouseControl():
     for event in pygame.event.get():
         if event.type == MOUSEBUTTONDOWN:
@@ -81,7 +100,7 @@ class Tile(pygame.sprite.Sprite):
             position[1]*TILE_WIDTH + (TILE_WIDTH/2))
          
         self.type = tile_type
-        image = { "Default":"tiles/landscape/default-8.gif",
+        image = { "Default":"tiles/landscape/default.gif",
             "LPath":"tiles/landscape/lpath.png",
             "TPath":"tiles/landscape/tpath.png",
             "XPath":"tiles/landscape/xpath.png",
@@ -145,13 +164,14 @@ lemminggroup = pygame.sprite.RenderPlain()  # Add it to the lemming group
 
 #for i in range(0, 100):  # Randomly create towers
 #    towergroup.add(Tower((random.randint(0, 24), random.randint(0, 15))))
-for i in range(0, 100):  # Randomly create tiles
-    tilegroup.add(Tile((random.randint(0, 24), random.randint(0, 15)), "l"))
+#for i in range(0, 100):  # Randomly create tiles
+#    tilegroup.add(Tile((random.randint(0, 24), random.randint(0, 15)), "l"))
 
 
 
 # Start the game loop
 framecount = 0
+importLevel()
 while 1:
     framecount = (framecount + 1) % FRAMERATE
 
