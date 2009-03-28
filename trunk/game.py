@@ -83,37 +83,49 @@ class Tile(pygame.sprite.Sprite):
 # Define the random direction chooser
 random.seed(time.time())
 
-# Define the towers/lemming that will be on the map
+# Define the tower/lemming groups that will be on the map
 rect = screen.get_rect()
 lemminggroup = pygame.sprite.RenderPlain()  # Add it to the lemming group
 towergroup = pygame.sprite.RenderPlain()
 tilegroup = pygame.sprite.RenderPlain()
-for i in range(0, 10):
+
+# Randomly create towers
+for i in range(0, 100):
     towergroup.add(Tower((random.randint(0, 24), random.randint(0, 15))))
 
-framecount = 0
-# Start the game loop
-while 1:
-    framecount = (framecount + 1) % FRAMERATE
-    if framecount == 1 and lemsAlive < NUM_LEMS:
-        lemminggroup.add(Lemming((100, 100)))  # Add it to the lemming group
-        lemsAlive += 1
 
-    deltaT = clock.tick(30)  # Controll the framerate (which controls game speed)
-    screen.fill(BACKGROUND)  # Background color
+def updateBoard():
     lemminggroup.update(deltaT)  # Update the positions of our objects
     towergroup.update(deltaT)
     tilegroup.update(deltaT)
-
-    # See if our lemming collided with anything
-    for l in lemminggroup:
-        if pygame.sprite.spritecollide(l, towergroup, False):  # Collision with a tower
-            l.direction += random.choice((90, -90))  # Rotate either left or right
 
     # Redraw our object positions
     lemminggroup.draw(screen)
     towergroup.draw(screen)
     tilegroup.draw(screen)
 
-    # Redraw the map with the above changes
+
+def detectCollisions():
+    # See if our lemming collided with anything
+    for l in lemminggroup:
+        if pygame.sprite.spritecollide(l, towergroup, False):  # Collision with a tower
+            l.direction += random.choice((90, -90))  # Rotate either left or right
+
+
+
+# Start the game loop
+framecount = 0
+while 1:
+    framecount = (framecount + 1) % FRAMERATE
+
+    # Create more lemmings if we don't have enough
+    if framecount == 1 and lemsAlive < NUM_LEMS:
+        lemminggroup.add(Lemming((100, 100)))  # Add it to the lemming group
+        lemsAlive += 1
+
+    # Update everything and redraw the board
+    deltaT = clock.tick(30)  # Controll the framerate (which controls game speed)
+    screen.fill(BACKGROUND)  # Background color
+    updateBoard()
+    detectCollisions()
     pygame.display.flip()
