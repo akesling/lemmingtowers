@@ -57,7 +57,8 @@ class Tower(pygame.sprite.Sprite):
     def __init__(self, position, image="images/tower.png"):
         pygame.sprite.Sprite.__init__(self)
         self.src_image = pygame.image.load(image)
-        self.position = position
+        self.position = (position[0]*TILE_WIDTH + (TILE_WIDTH/2), \
+            position[1]*TILE_WIDTH + (TILE_WIDTH/2))
         self.image = self.src_image
         self.rect = self.image.get_rect()
 
@@ -84,17 +85,19 @@ random.seed(time.time())
 
 # Define the towers/lemming that will be on the map
 rect = screen.get_rect()
-lemminggroup = pygame.sprite.RenderPlain(Lemming((100, 100)))  # Add it to the lemming group
+lemminggroup = pygame.sprite.RenderPlain()  # Add it to the lemming group
 towergroup = pygame.sprite.RenderPlain()
-tilegroup = pygame.sprite.RenderPlain(Tile((1, 10)))
+tilegroup = pygame.sprite.RenderPlain()
+for i in range(0, 10):
+    towergroup.add(Tower((random.randint(0, 24), random.randint(0, 15))))
 
 framecount = 0
 # Start the game loop
 while 1:
     framecount = (framecount + 1) % FRAMERATE
-    if framecount == 0:
-        lemming = Lemming((100, 100))  # Define a lemming
-        lemminggroup.add(lemming)  # Add it to the lemming group
+    if framecount == 1 and lemsAlive < NUM_LEMS:
+        lemminggroup.add(Lemming((100, 100)))  # Add it to the lemming group
+        lemsAlive += 1
 
     deltaT = clock.tick(30)  # Controll the framerate (which controls game speed)
     screen.fill(BACKGROUND)  # Background color
