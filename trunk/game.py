@@ -113,14 +113,16 @@ class Tile(pygame.sprite.Sprite):
         
         self.src_image = pygame.image.load(image)
         self.image = self.src_image
+        self.rect = self.image.get_rect()
+		
         self.orient = { 
             "N":0,
             "S":180,
             "E":90,
-            "W":270 
+            "W":270
         }[orient]
+		
         self.image = pygame.transform.rotate(self.image, self.orient)
-        self.rect = self.image.get_rect()
 
     def update(self, deltaT):
         self.position = self.position
