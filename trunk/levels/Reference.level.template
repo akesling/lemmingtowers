@@ -2,11 +2,13 @@ column,row:piece:args,args,args
 
 Pieces:
 
-Tower:FireN,FireE,FireS,FireW
+Default
+Tower:N,E,S,W
 LPath:(N,E,S,W)
 TPath:(N,E,S,W)
 IPath:(N,E,S,W)
 XPath
 Pit
-SRiver:(N,E,S,W)
+IRiver:(N,E,S,W)
+TRiver:(N,E,S,W)
 LRiver:(N,E,S,W)
