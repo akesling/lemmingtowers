@@ -29,17 +29,18 @@ class Lemming(pygame.sprite.Sprite):
     TURN_SPEED = 5
     ACCELERATION = 2
 
-    def __init__(self, position, image="images/lemming.png"):
+    def __init__(self, position, image="images/lemming-8.gif"):
         pygame.sprite.Sprite.__init__(self)
         self.src_image = pygame.image.load(image)
         self.position = position
         self.speed = 2
         self.direction = 0
         self.k_left = self.k_right = self.k_up = self.k_down = 0
+        self.shouldMove = 1
 
     def update(self, deltaT):
-        if self.position[0] == SCREEN_SIZE[0] or self.position[1] == SCREEN_SIZE[1] or self.position[0] == 0 or self.position[1] == 0:
-            self.speed = 0
+        if self.position[0] >= SCREEN_SIZE[0] or self.position[1] >= SCREEN_SIZE[1] or self.position[0] <= 0 or self.position[1] <= 0:
+            self.direction += random.choice((90, -90))  # Rotate either left or right
 
         self.speed += (self.k_up + self.k_down)
         if self.speed > self.MAX_FORWARD_SPEED:
@@ -48,11 +49,14 @@ class Lemming(pygame.sprite.Sprite):
             self.speed = 0
 
 #        self.direction = (self.k_right + self.k_left)
-        x, y = self.position
-        rad = self.direction * math.pi / 180
-        x += self.speed * math.sin(rad)
-        y += self.speed * math.cos(rad)
-        self.position = (x, y)
+        if self.shouldMove == 1:
+            x, y = self.position
+            rad = self.direction * math.pi / 180
+            x += self.speed * math.sin(rad)
+            y += self.speed * math.cos(rad)
+            self.position = (x, y)
+        else:
+            self.shouldMove = 1
 
         self.image = pygame.transform.rotate(self.src_image, self.direction)
         self.rect = self.image.get_rect()
@@ -99,29 +103,18 @@ class Tile(pygame.sprite.Sprite):
             self.orient = 0
 		
 
-# Define the random direction chooser
-random.seed(time.time())
-
-# Define the tower/lemming groups that will be on the map
-rect = screen.get_rect()
-lemminggroup = pygame.sprite.RenderPlain()  # Add it to the lemming group
-towergroup = pygame.sprite.RenderPlain()
-tilegroup = pygame.sprite.RenderPlain()
-
-# Randomly create towers
-for i in range(0, 100):
-    tilegroup.add(Tile((random.randint(0, 24), random.randint(0, 15)), "images/l.png"))
 
 
 def updateBoard():
-    lemminggroup.update(deltaT)  # Update the positions of our objects
     towergroup.update(deltaT)
     tilegroup.update(deltaT)
+    lemminggroup.update(deltaT)  # Update the positions of our objects
 
     # Redraw our object positions
-    lemminggroup.draw(screen)
     towergroup.draw(screen)
     tilegroup.draw(screen)
+    lemminggroup.draw(screen)
+
 
 
 def detectCollisions():
@@ -129,6 +122,26 @@ def detectCollisions():
     for l in lemminggroup:
         if pygame.sprite.spritecollide(l, towergroup, False):  # Collision with a tower
             l.direction += random.choice((90, -90))  # Rotate either left or right
+            print l.direction
+            l.shouldMove = 0
+
+
+
+# Define the random direction chooser
+random.seed(time.time())
+
+# Define the tower/lemming groups that will be on the map
+rect = screen.get_rect()
+towergroup = pygame.sprite.RenderPlain()
+tilegroup = pygame.sprite.RenderPlain()
+lemminggroup = pygame.sprite.RenderPlain()  # Add it to the lemming group
+
+# Randomly create towers
+for i in range(0, 100):
+    towergroup.add(Tower((random.randint(0, 24), random.randint(0, 15))))
+# Randomly create towers
+for i in range(0, 100):
+    tilegroup.add(Tile((random.randint(0, 24), random.randint(0, 15)), "images/l.png"))
 
 
 
