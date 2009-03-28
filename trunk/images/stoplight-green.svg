@@ -13,10 +13,10 @@
    id="svg2383"
    sodipodi:version="0.32"
    inkscape:version="0.46"
-   sodipodi:docname="stoplight.svg"
+   sodipodi:docname="stoplight-green.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    version="1.0"
-   inkscape:export-filename="/home/daniel/subversion/lemmingtowers/images/stoplight-off.png"
+   inkscape:export-filename="/home/daniel/subversion/lemmingtowers/images/stoplight-red.png"
    inkscape:export-xdpi="9"
    inkscape:export-ydpi="9">
   <defs
@@ -40,8 +40,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="3.9983381"
-     inkscape:cy="149.29273"
+     inkscape:cx="4.5730153"
+     inkscape:cy="151.67534"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -91,7 +91,17 @@
        sodipodi:cy="47.664913"
        sodipodi:cx="58.588848"
        id="path3154"
-       style="opacity:1;fill:#003600;fill-opacity:1;stroke:#000000;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#00ff00;fill-opacity:1;stroke:#225500;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        sodipodi:type="arc" />
+    <path
+       sodipodi:type="arc"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path3236"
+       sodipodi:cx="106.06602"
+       sodipodi:cy="61.807049"
+       sodipodi:rx="9.0913725"
+       sodipodi:ry="9.0913725"
+       d="M 115.15739,61.807049 A 9.0913725,9.0913725 0 1 1 96.974645,61.807049 A 9.0913725,9.0913725 0 1 1 115.15739,61.807049 z"
+       transform="matrix(1.2222223,0,0,1.2222223,-20.539769,115.56463)" />
   </g>
 </svg>
