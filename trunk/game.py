@@ -12,6 +12,7 @@ BACKGROUND = (0, 0, 0)
 clock = pygame.time.Clock()
 FRAMERATE = 30
 NUM_LEMS = 10
+lemsAlive = 0
 
 
 
@@ -59,13 +60,22 @@ class Tower(pygame.sprite.Sprite):
         self.image = self.src_image
         self.rect = self.image.get_rect()
 
-    def fire():
-        pass
-
     def update(self, deltaT):
         self.position = self.position
         self.rect.center = self.position
 
+
+class Tile(pygame.sprite.Sprite):
+    def __init__(self, position, image="images/default-tile_8.gif"):
+        pygame.sprite.Sprite.__init__(self)
+        self.src_image = pygame.image.load(image)
+        self.position = position
+        self.image = self.src_image
+        self.rect = self.image.get_rect()
+
+    def update(self, deltaT):
+        self.position = self.position
+        self.rect.center = self.position
 
 # Define the random direction chooser
 random.seed(time.time())
@@ -76,13 +86,23 @@ lemming = Lemming((100, 100))  # Define a lemming
 lgroup = pygame.sprite.RenderPlain(lemming)  # Add it to the lemming group
 tower = Tower((100, 200))  # Same for towers
 tgroup = pygame.sprite.RenderPlain(tower)
+tile = Tile((500, 200))
+tilegroup = pygame.sprite.RenderPlain(tile)
 
+framecount = 0
 # Start the game loop
 while 1:
+    framecount = (framecount + 1) % FRAMERATE
+    if framecount == 0:
+        lemming = Lemming((100, 100))  # Define a lemming
+        lgroup.add(lemming)  # Add it to the lemming group
+        
+
     deltaT = clock.tick(30)  # Controll the framerate (which controls game speed)
     screen.fill(BACKGROUND)  # Background color
     lgroup.update(deltaT)  # Update the positions of our objects
     tgroup.update(deltaT)
+    tilegroup.update(deltaT)
 
     # See if our lemming collided with anything
     for l in lgroup:
@@ -92,6 +112,7 @@ while 1:
     # Redraw our object positions
     lgroup.draw(screen)
     tgroup.draw(screen)
+    tilegroup.draw(screen)
 
     # Redraw the map with the above changes
     pygame.display.flip()
