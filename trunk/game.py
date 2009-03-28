@@ -33,8 +33,10 @@ def importLevel():
     for tile in tiles:
         if tile[1][0] in ('IPath', 'LPath', 'TPath', 'IRiver', 'LRiver', 'TRiver'):
             tilegroup.add(Tile(tile[0], tile[1][0], tile[2][0]))
-        if tile[1][0] in ('XPath', 'Default', 'Tower', 'Pit'):
+        if tile[1][0] in ('XPath', 'Tower', 'Pit'):
             tilegroup.add(Tile(tile[0], tile[1][0]))
+        if tile[1][0] in ('Default'):
+			tilegroup.add(Tile(tile[0], random.choice(('IPath', 'LPath', 'TPath')), random.choice(('N', 'S', 'E', 'W'))))
     
 def mouseControl():
     for event in pygame.event.get():
@@ -81,7 +83,6 @@ class Lemming(pygame.sprite.Sprite):
             y += self.speed * math.cos(rad)
             self.position = (x, y)
 
-            if self.position
 
 #            print "Moving..."
         else:
@@ -179,7 +180,7 @@ class Tile(pygame.sprite.Sprite):
         self.rect.center = self.position
 
     def rotate(self):
-        self.image = pygame.transform.rotate(self.image, 90)
+        self.image = pygame.transform.rotate(self.image, -90)
         self.orient = self.orient + 90
         if self.orient == 360:
             self.orient = 0
