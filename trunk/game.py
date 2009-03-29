@@ -78,7 +78,8 @@ class Tile(pygame.sprite.Sprite):
             position[1]*TILE_WIDTH + (TILE_WIDTH/2))
          
         self.type = tile_type
-        image = { "Default":"tiles/landscape/default.gif",
+        image = { 
+            "Default":"tiles/landscape/default.gif",
             "Pit":"tiles/pit.gif",
             "Tower":"tiles/tower.gif",
             "IRiver":"tiles/landscape/iriver.gif",
@@ -87,41 +88,39 @@ class Tile(pygame.sprite.Sprite):
             "LPath":"tiles/landscape/lpath.png",
             "TPath":"tiles/landscape/tpath.png",
             "XPath":"tiles/landscape/xpath.png",
-            "IPath":"tiles/landscape/ipath.png"}[self.type]
+            "IPath":"tiles/landscape/ipath.png"
+            }[self.type]
         
         self.src_image = pygame.image.load(image)
         self.image = self.src_image
         self.rect = self.image.get_rect()
         
-
-        self.validEntrances = ()
-        if self.type == "LPath":
-            self.validEntrances = ["N", "E"]
-        elif self.type == "TPath":
-            self.validEntrances = ["N", "E", "W"]
-        elif self.type == "XPath":
-            self.validEntrances = ["N", "E", "S", "W"]
+        if self.type in ("LPath", "TPath", "XPath", "IPath"):
+            self.validEntrances = {
+                "LPath":["N", "E"],
+                "TPath":["N", "E", "W"],
+                "XPath":["N", "E", "S", "W"],
+                "IPath":["N", "S"]
+                }[self.type]
         else:
-            self.validEntrances = ["N", "S"]
+            self.validEntrances = []
 
         self.orient = { 
             "N":0,
             "E":90,
             "S":180,
             "W":270
-        }[orient]
+            }[orient]
         for i in range(0, self.orient/90):  # Rotate right until we're in the specified orientation
             self.rotate()
 
     def canEnter(self, origin):
-        if origin == 0:
-            origin = "N"
-        elif origin == 90:
-            origin = "E"
-        elif origin == 180:
-            origin = "S"
-        else:
-            origin = "W"
+        origin = {
+            0:"N",
+            90:"E",
+            180:"S",
+            270:"W"
+            }[origin]
 
         if origin in self.validEntrances:
             return True
@@ -140,15 +139,12 @@ class Tile(pygame.sprite.Sprite):
 
         # Account for rotation in the list of valid entrances
         for entrance in self.validEntrances:
-            if entrance == "N":
-                entrance = "E"
-            elif entrance == "E":
-                entrance = "S"
-            elif entrance == "S":
-                entrance = "W"
-            else:
-                entrance = "N"
-
+            entrance = {
+                "N":"E",
+                "E":"S",
+                "S":"W",
+                "W":"N"
+                }[entrance]
 
 
 def updateBoard():
@@ -191,9 +187,9 @@ def importLevel():
     for tile in tiles:
         if tile[1][0] in ('IPath', 'LPath', 'TPath', 'IRiver', 'LRiver', 'TRiver'):
             tilegroup.add(Tile(tile[0], tile[1][0], tile[2][0]))
-        if tile[1][0] in ('XPath', 'Tower', 'Pit'):
+        elif tile[1][0] in ('XPath', 'Tower', 'Pit'):
             tilegroup.add(Tile(tile[0], tile[1][0]))
-        if tile[1][0] in ('Default'):
+        elif tile[1][0] in ('Default'):
             tilegroup.add(Tile(tile[0], random.choice(('IPath', 'LPath', 'TPath')), random.choice(('N', 'S', 'E', 'W'))))
     
 
