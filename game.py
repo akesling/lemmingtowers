@@ -1,53 +1,17 @@
-import math
+import math, random
+import time, sys
 import pygame
 from pygame.locals import *
-import random
-import sys
-import time
 
 # Game settings
 SCREEN_SIZE = (1024, 768)
-screen = pygame.display.set_mode(SCREEN_SIZE)
 BACKGROUND = (0, 0, 0)
-clock = pygame.time.Clock()
 FRAMERATE = 30
 NUM_LEMS = 1
-lemsAlive = 0
 TILE_WIDTH = 40
-
-def importLevel():
-    if len(sys.argv) > 1:
-        filename = sys.argv[1]
-    else:
-        print "Must provide a level"
-        exit();
-
-    tiles = []
-
-    level = open(filename, "r")
-    for space in level:
-        space = map((lambda x: x.split(',')), space.strip().split(':'))
-        space[0] = map(int, space[0])
-        tiles.append(space)
-    
-    for tile in tiles:
-        if tile[1][0] in ('IPath', 'LPath', 'TPath', 'IRiver', 'LRiver', 'TRiver'):
-            tilegroup.add(Tile(tile[0], tile[1][0], tile[2][0]))
-        if tile[1][0] in ('XPath', 'Tower', 'Pit'):
-            tilegroup.add(Tile(tile[0], tile[1][0]))
-        if tile[1][0] in ('Default'):
-			tilegroup.add(Tile(tile[0], random.choice(('IPath', 'LPath', 'TPath')), random.choice(('N', 'S', 'E', 'W'))))
-    
-def mouseControl():
-    for event in pygame.event.get():
-        if event.type == MOUSEBUTTONDOWN:
-            mousePos = pygame.mouse.get_pos()
-            for tile in tilegroup:
-                if (tile.position[0]-20 < mousePos[0] < tile.position[0]+20 \
-                and tile.position[1]-20 < mousePos[1] < tile.position[1]+20):
-                    tile.rotate()
-
-
+screen = pygame.display.set_mode(SCREEN_SIZE)
+clock = pygame.time.Clock()
+lemsAlive = 0
 
 class Lemming(pygame.sprite.Sprite):
     MAX_FORWARD_SPEED = 10
@@ -83,23 +47,12 @@ class Lemming(pygame.sprite.Sprite):
             y += self.speed * math.cos(rad)
             self.position = (x, y)
 
-
-#            print "Moving..."
         else:
-#            print "Not moving..."
             self.shouldMove = 1
 
         self.image = pygame.transform.rotate(self.src_image, self.direction)
         self.rect = self.image.get_rect()
         self.rect.center = self.position
-
-
-
-def getTile(x, y):
-    gridValue = (int(x/40), int(y/40))
-    for tile in tilegroup:
-        if int(x/40) <= tile.position <= (int(x/40)+40):
-            return tile
 
 
 
@@ -220,39 +173,76 @@ def detectCollisions():
             l.position
 
 
+def importLevel():
+    if len(sys.argv) > 1:
+        filename = sys.argv[1]
+    else:
+        print "Must provide a level"
+        exit();
 
-# Define the random direction chooser
-random.seed(time.time())
+    tiles = []
 
-# Define the tower/lemming groups that will be on the map
-rect = screen.get_rect()
-towergroup = pygame.sprite.RenderPlain()
-tilegroup = pygame.sprite.RenderPlain()
-lemminggroup = pygame.sprite.RenderPlain()  # Add it to the lemming group
+    level = open(filename, "r")
+    for space in level:
+        space = map((lambda x: x.split(',')), space.strip().split(':'))
+        space[0] = map(int, space[0])
+        tiles.append(space)
+    
+    for tile in tiles:
+        if tile[1][0] in ('IPath', 'LPath', 'TPath', 'IRiver', 'LRiver', 'TRiver'):
+            tilegroup.add(Tile(tile[0], tile[1][0], tile[2][0]))
+        if tile[1][0] in ('XPath', 'Tower', 'Pit'):
+            tilegroup.add(Tile(tile[0], tile[1][0]))
+        if tile[1][0] in ('Default'):
+            tilegroup.add(Tile(tile[0], random.choice(('IPath', 'LPath', 'TPath')), random.choice(('N', 'S', 'E', 'W'))))
+    
+
+def getTile(x, y):
+    gridValue = (int(x/40), int(y/40))
+    for tile in tilegroup:
+        if int(x/40) <= tile.position <= (int(x/40)+40):
+            return tile
 
 
-#for i in range(0, 100):  # Randomly create towers
-#    towergroup.add(Tower((random.randint(0, 24), random.randint(0, 15))))
-#for i in range(0, 100):  # Randomly create tiles
-#    tilegroup.add(Tile((random.randint(0, 24), random.randint(0, 15)), "l"))
+
+def mouseControl():
+    for event in pygame.event.get():
+        if event.type == MOUSEBUTTONDOWN:
+            mousePos = pygame.mouse.get_pos()
+            for tile in tilegroup:
+                if (tile.position[0]-20 < mousePos[0] < tile.position[0]+20 \
+                and tile.position[1]-20 < mousePos[1] < tile.position[1]+20):
+                    if tile.type in ('IPath', 'LPath', 'TPath'):
+                        tile.rotate()
 
 
 
-# Start the game loop
-framecount = 0
-importLevel()
-while 1:
-    framecount = (framecount + 1) % FRAMERATE
+if __name__ == "__main__":
+    # Define the random direction chooser
+    random.seed(time.time())
 
-    # Create more lemmings if we don't have enough
-    if framecount == 1 and lemsAlive < NUM_LEMS:
-        lemminggroup.add(Lemming((100, 100)))  # Add it to the lemming group
-        lemsAlive += 1
+    # Define the tower/lemming groups that will be on the map
+    rect = screen.get_rect()
+    towergroup = pygame.sprite.RenderPlain()
+    tilegroup = pygame.sprite.RenderPlain()
+    lemminggroup = pygame.sprite.RenderPlain()  # Add it to the lemming group
 
-    # Update everything and redraw the board
-    deltaT = clock.tick(30)  # Control the framerate (which controls game speed)
-    screen.fill(BACKGROUND)  # Background color
-    updateBoard()
-    detectCollisions()
-    pygame.display.flip()
-    mouseControl() #Rotate tiles on mouse click
+
+    # Start the game loop
+    framecount = 0
+    importLevel()
+    while 1:
+        framecount = (framecount + 1) % FRAMERATE
+
+        # Create more lemmings if we don't have enough
+        if framecount == 1 and lemsAlive < NUM_LEMS:
+            lemminggroup.add(Lemming((100, 100)))  # Add it to the lemming group
+            lemsAlive += 1
+
+        # Update everything and redraw the board
+        deltaT = clock.tick(30)  # Control the framerate (which controls game speed)
+        screen.fill(BACKGROUND)  # Background color
+        updateBoard()
+        detectCollisions()
+        pygame.display.flip()
+        mouseControl() #Rotate tiles on mouse click
